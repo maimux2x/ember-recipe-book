@@ -1,7 +1,12 @@
 import Controller from '@ember/controller';
 import { action } from '@ember/object';
+import {inject as service} from '@ember/service';
 
 export default class CreateRecipeController extends Controller {
+
+  @service recipeData;
+  @service router;
+
   title = '';
   description = '';
   ingredients = '';
@@ -32,7 +37,8 @@ export default class CreateRecipeController extends Controller {
     event.preventDefault();
 
     let newRecipe = {
-      title: this.title,
+      id:          this.recipeData.generateGUID(),
+      title:       this.title,
       description: this.description,
       ingredients: this.ingredients
         .split(',')
@@ -40,6 +46,8 @@ export default class CreateRecipeController extends Controller {
       instructions: this.instructions,
     };
 
-    console.log(newRecipe);
+    this.recipeData.saveRecipe(newRecipe);
+
+    this.router.transitionTo('recipes');
   }
 }
